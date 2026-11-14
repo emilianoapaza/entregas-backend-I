@@ -1,28 +1,28 @@
-// import { envConfig } from "./config/env.config.js"
+import express from "express"
 
-// console.log(`Aplicación: ${envConfig.appName}`);
-// console.log(`Puerto: ${envConfig.port}`);
-// console.log(`Entorno: ${envConfig.nodeEnv}`);
+import routingDetector from "./middlewares/routing.js";
 
-import ServiceManager from "./managers/ServiceManager.js";
+import servicesRouter from "./routes/services.router.js"
+import clientesRouter from "./routes/clients.router.js"
 
-const serviceManager = new ServiceManager();
+// Settings
+const app = express()
 
-const newService = await serviceManager.addService({
-    name: "Low Fade",
-    description: "Corte moderno echo a maquina",
-    duration: 60,
-    price: 13000,
-    category: "Corte",
-    available: true
-});
+// Middlewares
 
-console.log("Creado:", newService)
+app.use(express.json())
+app.use(routingDetector)
 
-console.log("Buscado: ", await serviceManager.getServiceByID(newService.id))
+// Routes
 
-console.log("Actualizado: ", await serviceManager.updateService(newService.id, { id: 15 }))
+app.use("/api/services", servicesRouter)
 
-console.log("Eliminado: ", await serviceManager.deleteService(newService.id))
+app.use("/api/clientes", clientesRouter)
 
-console.log(await serviceManager.getServices())
+app.get("/", (req, res) => {
+    res.send("hola mundo")
+})
+
+
+
+export default app

@@ -1,11 +1,29 @@
 [
   {
-    "id": "3c1435a5-ccd3-483a-97c6-84dbbfd8708e",
-    "name": "Low Fade",
-    "description": "Corte moderno echo a maquina",
-    "duration": 60,
-    "price": 15000,
-    "category": "Corte",
+    "id": "ff69ae19-88e8-484f-b9f8-5f6caa0f5900",
+    "name": "Barba",
+    "description": "Trabajamos con los mejores productos del mercado",
+    "duration": 3,
+    "price": 500,
+    "category": "barba",
+    "available": false
+  },
+  {
+    "id": "4a853ae3-c0a4-49cc-8e0c-9ce6d75b17e8",
+    "name": "Tintura",
+    "description": "Trabajamos con los mejores productos del mercado",
+    "duration": 3,
+    "price": 500,
+    "category": "cabello",
+    "available": true
+  },
+  {
+    "id": "4a853ae3-c0a4-49cc-8e0c-9ce6d75b17e9",
+    "name": "Rapado",
+    "description": "Pelon",
+    "duration": 30,
+    "price": 5000,
+    "category": "calva",
     "available": true
   }
 ]

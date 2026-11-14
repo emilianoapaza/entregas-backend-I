@@ -3,11 +3,8 @@ import dotenv from "dotenv"
 dotenv.config()
 
 // Fail-Fast: si falta una configuracion indipensable, la aplicacion debe fallar inmediatamente con un mensaje claro.
-// if (!process.env.MONGO_URI) {
-//     throw new Error("Falta configurar MONGO_URI")
-// }
 
-const requiredVariables = ["MONGO_URI"]
+const requiredVariables = ["PORT", "NODE_ENV"]
 
 for (const envVar of requiredVariables) {
     if (!process.env[envVar]) {
@@ -18,10 +15,8 @@ for (const envVar of requiredVariables) {
 export const envConfig = {
     port: Number(process.env.PORT) || 8080,
     nodeEnv: process.env.NODE_ENV || "development",
-    appName: process.env.APP_NAME || "Sistema Backend",
-    mongoUri: process.env.MONGO_URI
+    appName: process.env.APP_NAME || "Sistema Backend"
 }
-
 
 // process es un objeto global de NodeJS que proporciona informacion y control sobre el proceso actual en el que se esta ejecutando aplicacion.
 

@@ -61,7 +61,8 @@ class ServiceManager {
 
     async getServiceByID(id) {
         const services = await this.readServices()
-        return services.find(service => service.id === id) || null;
+        const resultado = services.find(service => service.id === id);
+        return resultado
     }
 
     async addService(serviceData) {

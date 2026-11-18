@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Segundo entregable de Backend I desarrollado con Node.js, JavaScript y Express. Permite gestionar servicios mediante una API REST, implementando operaciones CRUD y persistencia de datos en archivos JSON.
+Tercer entregable API REST desarrollada con Node.js, Express y FileSystem que gestiona dos recursos principales: **servicios** y **reservas**, con persistencia de datos en archivos JSON (`services.json` y `bookings.json`).
 
 ## Tecnologías
 
@@ -37,7 +37,7 @@ Modo normal:
 npm start
 ```
 
-El servidor estará disponible en `http://localhost:8080`, utilizando el puerto configurado en las variables de entorno.
+El servidor estará disponible en `http://localhost:8080` (o el puerto configurado en las variables de entorno).
 
 ## Variables de entorno
 
@@ -54,45 +54,49 @@ src/
 ├── config/
 │   └── env.config.js
 ├── data/
+│   ├── bookings.json
 │   └── services.json
 ├── managers/
+│   ├── BookingManager.js
 │   └── ServiceManager.js
 ├── middlewares/
 │   └── routing.js
 ├── routes/
-│   ├── clients.router.js
+│   ├── bookings.router.js
 │   └── services.router.js
 ├── app.js
 └── server.js
 ```
 
-## Recurso: Servicios
+---
+
+## Recursos de la API
+
+### 1. Servicios (`/api/services`)
 
 Cada servicio contiene:
 
-- id
-- name
-- description
-- duration
-- price
-- category
-- available
+- `id` (generado automáticamente)
+- `name`
+- `description`
+- `duration`
+- `price`
+- `category`
+- `available`
 
 Los datos se almacenan en `src/data/services.json`.
 
-## Operaciones disponibles
+#### Endpoints disponibles
 
-La API utiliza el prefijo `/api/services`.
+| **Método HTTP** | **Ruta**             | **Descripción**                                     |
+| --------------- | -------------------- | --------------------------------------------------- |
+| GET             | `/api/services`      | Devuelve todos los servicios (soporta query params) |
+| GET             | `/api/services/:sid` | Devuelve un servicio específico por ID              |
+| POST            | `/api/services`      | Crea un nuevo servicio (valida todos los campos)    |
+| PUT             | `/api/services/:sid` | Actualiza un servicio (el ID no se puede modificar) |
+| DELETE          | `/api/services/:sid` | Elimina un servicio por ID                          |
 
-| **Método HTTP** | **Ruta**             | **Descripción**             |
-| --------------- | -------------------- | --------------------------- |
-| GET             | `/api/services`      | Obtiene todos los servicios |
-| GET             | `/api/services/:sid` | Busca un servicio por ID    |
-| POST            | `/api/services`      | Crea un nuevo servicio      |
-| PUT             | `/api/services/:sid` | Actualiza un servicio       |
-| DELETE          | `/api/services/:sid` | Elimina un servicio         |
-
-### Filtros disponibles
+#### Filtros disponibles
 
 El endpoint `GET /api/services` permite filtrar los servicios mediante query params:
 
@@ -100,9 +104,7 @@ El endpoint `GET /api/services` permite filtrar los servicios mediante query par
 - Por disponibilidad: `?available=true`
 - Combinando ambos filtros: `?category=barba&available=true`
 
-### Ejemplo de creación de un servicio
-
-Para crear un servicio mediante `POST /api/services`, se debe enviar un body en formato JSON:
+#### Ejemplo de creación de un servicio (`POST /api/services`)
 
 ```json
 {
@@ -115,16 +117,54 @@ Para crear un servicio mediante `POST /api/services`, se debe enviar un body en 
 }
 ```
 
-El ID se genera automáticamente en el servidor mediante `randomUUID()`.
+---
 
-## Organización
+### 2. Reservas (`/api/bookings`)
 
-- **env.config.js:** carga y configura las variables de entorno.
-- **ServiceManager.js:** contiene la lógica de las operaciones CRUD y la persistencia de datos.
-- **services.router.js:** define las rutas del recurso servicios y gestiona las respuestas HTTP.
-- **routing.js:** contiene el middleware de identificación de rutas.
-- **server.js:** configura Express, los middlewares y los routers.
-- **app.js:** inicia el servidor.
+Cada reserva contiene:
+
+- `id` (generado automáticamente)
+- `clientName`
+- `clientEmail`
+- `date`
+- `time`
+- `status`
+- `services` (Array de objetos con la estructura: `{ "service": "idDelServicio", "quantity": 1 }`. Si se agrega un servicio ya existente en la reserva, se incrementa su `quantity`).
+
+Los datos se almacenan en `src/data/bookings.json`.
+
+#### Endpoints disponibles
+
+| **Método HTTP** | **Ruta**                           | **Descripción**                                                                |
+| --------------- | ---------------------------------- | ------------------------------------------------------------------------------ |
+| POST            | `/api/bookings`                    | Crea una nueva reserva (puede iniciarse con `services` vacío)                  |
+| GET             | `/api/bookings/:bid`               | Devuelve una reserva específica por ID                                         |
+| POST            | `/api/bookings/:bid/services/:sid` | Agrega un servicio a una reserva existente (valida que ambos recursos existan) |
+
+#### Ejemplo de creación de una reserva (`POST /api/bookings`)
+
+```json
+{
+   "clientName": "Juan Pérez",
+   "clientEmail": "juan.perez@email.com",
+   "date": "2026-11-20",
+   "time": "15:30",
+   "status": "pending",
+   "services": []
+}
+```
+
+---
+
+## Arquitectura y Organización
+
+- **`ServiceManager.js`:** Gestiona la persistencia y operaciones CRUD sobre `services.json` mediante los métodos: `getServices`, `getServiceById`, `addService`, `updateService` y `deleteService`.
+- **`BookingManager.js`:** Gestiona la persistencia y operaciones sobre `bookings.json` mediante los métodos: `createBooking`, `getBookingById` y `addServiceToBooking`.
+- **`services.router.js` / `bookings.router.js`:** Definen las rutas de cada recurso, validan parámetros/cuerpos de petición y gestionan las respuestas HTTP.
+- **`routing.js`:** Middleware centralizado para la identificación y gestión de rutas.
+- **`env.config.js`:** Carga y configura las variables de entorno de la aplicación.
+- **`server.js`:** Configuración de Express, middlewares globales y montaje de routers.
+- **`app.js`:** Punto de entrada principal que inicia el servidor.
 
 ---
 

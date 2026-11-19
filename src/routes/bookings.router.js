@@ -4,6 +4,14 @@ import BookingManager from "../managers/BookingManager.js"
 const bookingManager = new BookingManager()
 const router = Router()
 
+router.get("/", async (req, res) => {
+    const bookings = await bookingManager.getBookings()
+    res.status(200).json({
+        status: "success",
+        payload: bookings
+    })
+})
+
 router.post("/", async (req, res) => {
     const data = req.body
     try {

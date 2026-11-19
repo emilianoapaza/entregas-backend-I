@@ -10,8 +10,18 @@ class BookingManager {
     }
 
     async readBookings() {
-        const contenido = await readFile(this.path, "utf-8");
-        return JSON.parse(contenido)
+        try {
+            const contenido = await readFile(this.path, "utf-8");
+            if (!contenido.trim()) {
+                return []
+            }
+            return JSON.parse(contenido)
+        } catch (error) {
+            if (error.code === "ENOENT" || error instanceof SyntaxError) {
+                return []
+            }
+            throw error
+        }
     }
 
     async saveBookings(bookings) {
@@ -19,6 +29,10 @@ class BookingManager {
         await writeFile(this.path, contenido);
     }
 
+    async getBookings() {
+        const bookings = await this.readBookings();
+        return bookings
+    }
 
     async createBooking(bookingData) {
         if (!bookingData) {
@@ -46,7 +60,6 @@ class BookingManager {
 
         const bookings = await this.readBookings();
 
-        // const id = randomUUID()
         const id = bookings.length > 0 ? Math.max(...bookings.map(booking => booking.id)) + 1 : 1;
 
         const newBooking = {

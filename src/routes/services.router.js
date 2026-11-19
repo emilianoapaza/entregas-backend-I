@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
         console.log(services)
 
         res.status(200).json({
-            status: "succes",
+            status: "success",
             payload: services
         })
 
@@ -27,14 +27,14 @@ router.get("/", async (req, res) => {
 
 router.get("/:sid", async (req, res) => {
     const { sid } = req.params;
-    const service = await serviceManager.getServiceByID(sid)
+    const service = await serviceManager.getServiceByID(Number(sid))
     if (!service) {
         return res.status(404).json({
             message: "El servicio no existe"
         })
     }
     res.status(200).json({
-        status: "succes",
+        status: "success",
         payload: service
     })
 })
@@ -65,7 +65,7 @@ router.put("/:sid", async (req, res) => {
     }
 
     try {
-        const service = await serviceManager.updateService(sid, updateData)
+        const service = await serviceManager.updateService(Number(sid), updateData)
 
         if (!service) {
             return res.status(404).json({
@@ -89,7 +89,7 @@ router.put("/:sid", async (req, res) => {
 router.delete("/:sid", async (req, res) => {
     const { sid } = req.params;
 
-    const services = await serviceManager.deleteService(sid)
+    const services = await serviceManager.deleteService(Number(sid))
 
     if (!services) {
         return res.status(404).json({

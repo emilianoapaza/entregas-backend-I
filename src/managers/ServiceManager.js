@@ -1,5 +1,4 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { randomUUID } from "node:crypto";
 
 class ServiceManager {
     constructor() {
@@ -7,8 +6,18 @@ class ServiceManager {
     }
 
     async readServices() {
-        const contenido = await readFile(this.path, "utf-8");
-        return JSON.parse(contenido)
+        try {
+            const contenido = await readFile(this.path, "utf-8");
+            if (!contenido.trim()) {
+                return []
+            }
+            return JSON.parse(contenido)
+        } catch (error) {
+            if (error.code === "ENOENT" || error instanceof SyntaxError) {
+                return []
+            }
+            throw error
+        }
     }
 
     async saveServices(services) {
@@ -90,7 +99,7 @@ class ServiceManager {
 
         const services = await this.readServices();
 
-        const id = randomUUID()
+        const id = services.length > 0 ? Math.max(...services.map(service => service.id)) + 1 : 1
 
         const newServices = {
             id,

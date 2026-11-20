@@ -1,23 +1,6 @@
-import express from "express"
+import app from "./app.js";
+import { envConfig } from "./config/env.config.js";
 
-import routingDetector from "./middlewares/routing.js";
+const { port } = envConfig
 
-import servicesRouter from "./routes/services.router.js"
-import bookingsRouter from "./routes/bookings.router.js"
-
-
-
-// Settings
-const app = express()
-
-// Middlewares
-
-app.use(express.json())
-app.use(routingDetector)
-
-// Routes
-
-app.use("/api/services", servicesRouter)
-app.use("/api/bookings", bookingsRouter)
-
-export default app
+app.listen(port, console.log(`Escuchando en el puerto http://localhost:${port}/`))

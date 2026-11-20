@@ -2,7 +2,9 @@
 
 ## Descripción
 
-Tercer entregable API REST desarrollada con Node.js, Express y FileSystem que gestiona dos recursos principales: **servicios** y **reservas**, con persistencia de datos en archivos JSON (`services.json` y `bookings.json`).
+Cuarto entregable API REST desarrollada con Node.js, Express y FileSystem que gestiona dos recursos principales: **servicios** y **reservas**, con persistencia de datos en archivos JSON (`services.json` y `bookings.json`).
+
+En esta pre-entrega el proyecto se reorganizó separando responsabilidades en tres capas (**Routers**, **Controllers** y **Managers**), manteniendo intactas las rutas y el comportamiento externo de la API como base para futuras etapas con base de datos, validaciones y nuevas capas.
 
 ## Tecnologías
 
@@ -21,7 +23,7 @@ Clonar el repositorio e instalar las dependencias:
 npm install
 ```
 
-Crear un archivo `.env` en la raíz del proyecto siguiendo el formato de `.env.example`.
+Crear un archivo `.env` en la raíz del proyecto siguiendo el formato de `.env.example` (sin subir `.env` ni `node_modules` al repositorio).
 
 ## Ejecución
 
@@ -53,19 +55,24 @@ El servidor estará disponible en `http://localhost:8080` (o el puerto configura
 src/
 ├── config/
 │   └── env.config.js
+├── controllers/
+│   ├── bookings.controller.js
+│   └── services.controller.js
 ├── data/
 │   ├── bookings.json
 │   └── services.json
 ├── managers/
 │   ├── BookingManager.js
 │   └── ServiceManager.js
-├── middlewares/
-│   └── routing.js
 ├── routes/
 │   ├── bookings.router.js
 │   └── services.router.js
 ├── app.js
 └── server.js
+package.json
+.env.example
+.gitignore
+README.md
 ```
 
 ---
@@ -158,13 +165,12 @@ Los datos se almacenan en `src/data/bookings.json`.
 
 ## Arquitectura y Organización
 
-- **`ServiceManager.js`:** Gestiona la persistencia y operaciones CRUD sobre `services.json` mediante los métodos: `getServices`, `getServiceById`, `addService`, `updateService` y `deleteService`.
-- **`BookingManager.js`:** Gestiona la persistencia y operaciones sobre `bookings.json` mediante los métodos: `createBooking`, `getBookingById` y `addServiceToBooking`.
-- **`services.router.js` / `bookings.router.js`:** Definen las rutas de cada recurso, validan parámetros/cuerpos de petición y gestionan las respuestas HTTP.
-- **`routing.js`:** Middleware centralizado para la identificación y gestión de rutas.
-- **`env.config.js`:** Carga y configura las variables de entorno de la aplicación.
-- **`server.js`:** Configuración de Express, middlewares globales y montaje de routers.
-- **`app.js`:** Punto de entrada principal que inicia el servidor.
+- **Routers (`services.router.js`, `bookings.router.js`):** Definen los endpoints y los conectan con su respectivo controller, sin lógica de negocio ni acceso directo a archivos JSON.
+- **Controllers (`services.controller.js`, `bookings.controller.js`):** Leen `req.params`, `req.query` y `req.body`, llaman al manager correspondiente y responden con `res.status().json()`.
+   - `services.controller.js`: `getServices`, `getServiceById`, `createService`, `updateService` y `deleteService` (delega en `ServiceManager`).
+   - `bookings.controller.js`: `createBooking`, `getBookingById` y `addServiceToBooking` (delega en `BookingManager`, validando la existencia del servicio mediante `ServiceManager`).
+- **Managers (`ServiceManager.js`, `BookingManager.js`):** Gestionan la persistencia y lógica de datos sobre `services.json` y `bookings.json` sin utilizar `req` ni `res`.
+- **Configuración y arranque (`env.config.js`, `app.js`, `server.js`):** Cargan las variables de entorno, configuran la aplicación Express, montan las rutas y levantan el servidor.
 
 ---
 

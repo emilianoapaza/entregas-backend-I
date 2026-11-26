@@ -4,7 +4,6 @@ const serviceManager = new ServiceManager()
 export const getServices = async (req, res) => {
     const query = req.query;
     try {
-
         const services = await serviceManager.getServices(query)
 
         res.status(200).json({
@@ -40,7 +39,7 @@ export const createService = async (req, res) => {
     try {
         const newService = await serviceManager.addService(data)
         res.status(201).json({
-            status: "succes",
+            status: "success",
             payload: newService
         })
     } catch (error) {
@@ -88,17 +87,25 @@ export const updateService = async (req, res) => {
 
 export const deleteService = async (req, res) => {
     const { sid } = req.params;
+    try {
 
-    const services = await serviceManager.deleteService(Number(sid))
+        const services = await serviceManager.deleteService(Number(sid))
 
-    if (!services) {
-        return res.status(404).json({
-            message: "El servicio no existe"
+        if (!services) {
+            return res.status(404).json({
+                message: "El servicio no existe"
+            })
+        }
+
+        res.status(200).json({
+            status: "success",
+            payload: services
+        })
+
+    } catch (error) {
+        res.status(404).json({
+            status: "error",
+            payload: `${error}`
         })
     }
-
-    res.status(200).json({
-        status: "success",
-        payload: services
-    })
 }

@@ -19,11 +19,11 @@
   },
   {
     "id": 3,
-    "name": "Rapado",
-    "description": "Pelon",
-    "duration": 30,
-    "price": 5000,
-    "category": "calva",
+    "name": "Peluqueria canina",
+    "description": "Para todos los perror",
+    "duration": 60,
+    "price": 30000,
+    "category": "mediano",
     "available": true
   }
 ]

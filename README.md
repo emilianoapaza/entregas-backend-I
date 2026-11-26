@@ -13,7 +13,6 @@ En esta pre-entrega el proyecto se reorganizó separando responsabilidades en tr
 - JavaScript (ES Modules)
 - dotenv
 - File System (`node:fs/promises`)
-- Node Crypto (`node:crypto`)
 
 ## Instalación
 
@@ -144,6 +143,7 @@ Los datos se almacenan en `src/data/bookings.json`.
 
 | **Método HTTP** | **Ruta**                           | **Descripción**                                                                |
 | --------------- | ---------------------------------- | ------------------------------------------------------------------------------ |
+| GET             | `/api/bookings/`                   | Devuelve todas las reservas                                                    |
 | POST            | `/api/bookings`                    | Crea una nueva reserva (puede iniciarse con `services` vacío)                  |
 | GET             | `/api/bookings/:bid`               | Devuelve una reserva específica por ID                                         |
 | POST            | `/api/bookings/:bid/services/:sid` | Agrega un servicio a una reserva existente (valida que ambos recursos existan) |

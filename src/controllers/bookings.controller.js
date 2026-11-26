@@ -3,11 +3,18 @@ import BookingManager from "../managers/BookingManager.js"
 const bookingManager = new BookingManager()
 
 export const getBookings = async (req, res) => {
-    const bookings = await bookingManager.getBookings()
-    res.status(200).json({
-        status: "success",
-        payload: bookings
-    })
+    try {
+        const bookings = await bookingManager.getBookings()
+        res.status(200).json({
+            status: "success",
+            payload: bookings
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: "error",
+            message: `${error}`
+        })
+    }
 }
 
 export const createBooking = async (req, res) => {
@@ -29,18 +36,26 @@ export const createBooking = async (req, res) => {
 
 export const getBookingById = async (req, res) => {
     const { bid } = req.params
-    const booking = await bookingManager.getBookingById(bid)
-    if (!booking) {
-        return res.status(404).json({
+    try {
+
+        const booking = await bookingManager.getBookingById(bid)
+        if (!booking) {
+            return res.status(404).json({
+                status: "error",
+                message: "El booking no existe"
+            })
+        }
+
+        res.status(200).json({
+            status: "success",
+            payload: booking
+        })
+    } catch (error) {
+        res.status(400).json({
             status: "error",
-            message: "El booking no existe"
+            mesage: `${error}`
         })
     }
-
-    res.status(200).json({
-        status: "success",
-        payload: booking
-    })
 }
 
 export const addServiceToBooking = async (req, res) => {
